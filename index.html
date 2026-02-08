@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Reels Downloader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        
+        header {
+            background: linear-gradient(to right, #833ab4, #fd1d1d);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+        }
+        
+        .logo h1 {
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+        
+        .instructions {
+            background-color: #f9f9f9;
+            border-left: 5px solid #833ab4;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .instructions h3 {
+            color: #833ab4;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        .input-section h3 {
+            margin-bottom: 15px;
+            color: #fd1d1d;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .link-input-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .link-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .link-input:focus {
+            border-color: #833ab4;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(131, 58, 180, 0.2);
+        }
+        
+        .paste-btn {
+            background-color: #833ab4;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .paste-btn:hover {
+            background-color: #7229a3;
+            transform: translateY(-2px);
+        }
+        
+        .download-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(to right, #fd1d1d, #fcb045);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(253, 29, 29, 0.3);
+        }
+        
+        .download-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .preview-section {
+            margin-top: 40px;
+            display: none;
+        }
+        
+        .preview-section h3 {
+            margin-bottom: 15px;
+            color: #fcb045;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .video-preview {
+            width: 100%;
+            background-color: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .video-preview video {
+            width: 100%;
+            display: block;
+        }
+        
+        .info-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .info-section h3 {
+            margin-bottom: 15px;
+            color: #833ab4;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .info-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #fd1d1d;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: #555;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid #ffc107;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 10px;
+            }
+            
+            header {
+                padding: 20px 15px;
+            }
+            
+            .logo h1 {
+                font-size: 1.8rem;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .link-input-container {
+                flex-direction: column;
+            }
+            
+            .paste-btn {
+                padding: 15px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fab fa-instagram"></i>
+                <h1>Instagram Reels Downloader</h1>
+            </div>
+            <p class="tagline">Paste Instagram Reel link and download videos instantly</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="instructions">
+                <h3><i class="fas fa-info-circle"></i> How to Use This Tool</h3>
+                <ol>
+                    <li>Open Instagram on your phone or computer</li>
+                    <li>Find the Reel you want to download and tap the three dots (···)</li>
+                    <li>Select "Copy link" from the menu</li>
+                    <li>Paste the link in the input field below</li>
+                    <li>Click the "Download Reel" button to save the video</li>
+                </ol>
+            </div>
+            
+            <div class="input-section">
+                <h3><i class="fas fa-link"></i> Paste Instagram Reel Link</h3>
+                <div class="link-input-container">
+                    <input type="text" id="reelLink" class="link-input" placeholder="https://www.instagram.com/reel/...">
+                    <button id="pasteBtn" class="paste-btn">
+                        <i class="fas fa-paste"></i> Paste
+                    </button>
+                </div>
+                
+                <button id="downloadBtn" class="download-btn">
+                    <i class="fas fa-download"></i> Download Reel
+                </button>
+            </div>
+            
+            <div class="message" id="message"></div>
+            
+            <div class="warning">
+                <i class="fas fa-exclamation-triangle"></i> 
+                <strong>Important:</strong> This tool is for downloading your own Reels or Reels with proper permissions. 
+                Please respect copyright and only download content you have rights to use.
+            </div>
+            
+            <div class="preview-section" id="previewSection">
+                <h3><i class="fas fa-play-circle"></i> Video Preview</h3>
+                <div class="video-preview" id="videoPreview">
+                    <!-- Video will be inserted here -->
+                </div>
+            </div>
+            
+            <div class="info-section" id="infoSection">
+                <h3><i class="fas fa-info-circle"></i> Video Information</h3>
+                <div class="info-grid" id="infoGrid">
+                    <!-- Info items will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Instagram Reels Downloader &copy; 2023 | This is a client-side tool for educational purposes</p>
+        <p>Instagram is a registered trademark of Instagram LLC.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reelLinkInput = document.getElementById('reelLink');
+            const pasteBtn = document.getElementById('pasteBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const previewSection = document.getElementById('previewSection');
+            const videoPreview = document.getElementById('videoPreview');
+            const infoSection = document.getElementById('infoSection');
+            const infoGrid = document.getElementById('infoGrid');
+            const message = document.getElementById('message');
+            
+            // Handle paste button click
+            pasteBtn.addEventListener('click', async function() {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    reelLinkInput.value = text;
+                    showMessage('Link pasted successfully!', 'success');
+                } catch (err) {
+                    showMessage('Unable to paste. Please paste manually.', 'error');
+                    console.error('Failed to read clipboard:', err);
+                }
+            });
+            
+            // Handle download button click
+            downloadBtn.addEventListener('click', function() {
+                const link = reelLinkInput.value.trim();
+                
+                if (!link) {
+                    showMessage('Please enter an Instagram Reel link', 'error');
+                    return;
+                }
+                
+                if (!isValidInstagramReelUrl(link)) {
+                    showMessage('Please enter a valid Instagram Reel URL', 'error');
+                    return;
+                }
+                
+                // Simulate processing
+                downloadBtn.disabled = true;
+                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                
+                // Simulate API call delay
+                setTimeout(() => {
+                    processDownload(link);
+                }, 1500);
+            });
+            
+            // Validate Instagram Reel URL
+            function isValidInstagramReelUrl(url) {
+                const instagramReelRegex = /https?:\/\/(www\.)?instagram\.com\/reel\/[a-zA-Z0-9_-]+\/?/;
+                return instagramReelRegex.test(url);
+            }
+            
+            // Process download (simulated)
+            function processDownload(link) {
+                // In a real implementation, this would call a backend API
+                // Since we can't access Instagram's API directly from frontend due to CORS,
+                // this is a simulation of what would happen
+                
+                // Extract reel ID from URL
+                const reelId = extractReelId(link);
+                
+                if (!reelId) {
+                    showMessage('Could not extract Reel ID from the URL', 'error');
+                    resetDownloadButton();
+                    return;
+                }
+                
+                // Simulate successful extraction
+                showMessage('Reel found! Preparing download...', 'success');
+                
+                // Show preview (simulated)
+                showPreview(reelId);
+                
+                // Show video info
+                showVideoInfo(reelId);
+                
+                // Create download link (simulated - in reality would need backend)
+                simulateDownload(reelId);
+            }
+            
+            // Extract reel ID from URL
+            function extractReelId(url) {
+                const matches = url.match(/\/reel\/([a-zA-Z0-9_-]+)/);
+                return matches ? matches[1] : null;
+            }
+            
+            // Show preview section with simulated video
+            function showPreview(reelId) {
+                previewSection.style.display = 'block';
+                
+                // Create a simulated video player
+                // In reality, you would need to fetch the actual video URL from a backend service
+                videoPreview.innerHTML = `
+                    <div style="padding: 30px; text-align: center; color: white;">
+                        <i class="fas fa-play-circle" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                        <h3>Preview of Reel: ${reelId}</h3>
+                        <p style="margin-top: 10px;">In a real implementation, the actual video would be displayed here.</p>
+                        <p>For demonstration, here's a sample video:</p>
+                    </div>
+                    <video controls>
+                        <source src="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                `;
+                
+                // Scroll to preview
+                previewSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            
+            // Show video information
+            function showVideoInfo(reelId) {
+                infoSection.style.display = 'block';
+                
+                // Simulated video info
+                const videoInfo = {
+                    'Reel ID': reelId,
+                    'Duration': '15 seconds',
+                    'Resolution': '720x1280',
+                    'Format': 'MP4',
+                    'Size': '2.4 MB',
+                    'Upload Date': 'June 15, 2023'
+                };
+                
+                // Clear previous info
+                infoGrid.innerHTML = '';
+                
+                // Add info items
+                for (const [key, value] of Object.entries(videoInfo)) {
+                    const infoItem = document.createElement('div');
+                    infoItem.className = 'info-item';
+                    infoItem.innerHTML = `
+                        <div class="info-label">${key}</div>
+                        <div class="info-value">${value}</div>
+                    `;
+                    infoGrid.appendChild(infoItem);
+                }
+            }
+            
+            // Simulate download
+            function simulateDownload(reelId) {
+                setTimeout(() => {
+                    showMessage(`Download complete! Reel ${reelId} has been saved.`, 'success');
+                    
+                    // In a real implementation, this would trigger an actual file download
+                    // For now, we'll create a dummy download link
+                    const tempLink = document.createElement('a');
+                    tempLink.href = '#';
+                    tempLink.download = `instagram_reel_${reelId}.mp4`;
+                    tempLink.innerHTML = 'Download Ready (Simulated)';
+                    
+                    // Reset button
+                    resetDownloadButton();
+                    downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download Another Reel';
+                    
+                    // Scroll to message
+                    message.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 2000);
+            }
+            
+            // Reset download button
+            function resetDownloadButton() {
+                downloadBtn.disabled = false;
+            }
+            
+            // Show message
+            function showMessage(text, type) {
+                message.textContent = text;
+                message.className = `message ${type}`;
+                message.style.display = 'block';
+                
+                // Auto-hide message after 5 seconds
+                setTimeout(() => {
+                    message.style.display = 'none';
+                }, 5000);
+            }
+            
+            // Example Instagram Reel links for testing
+            reelLinkInput.addEventListener('focus', function() {
+                if (!this.value) {
+                    this.placeholder = "Try: https://www.instagram.com/reel/CuC7Q_1gPCy/";
+                }
+            });
+            
+            // Allow pressing Enter to trigger download
+            reelLinkInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    downloadBtn.click();
+                }
+            });
+            
+            // Initialize with a sample link for demo purposes
+            reelLinkInput.value = "https://www.instagram.com/reel/CuC7Q_1gPCy/";
+        });
+    </script>
+</body>
+</html>
